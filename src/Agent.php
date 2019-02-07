@@ -26,7 +26,7 @@ final class Agent
 
     public function call(string $method, string $url, array $params, array $headers = []): Promise//<Resource>
     {
-        return call(function() use($url) {
+        return call(function() use($method, $url, $params, $headers) {
             $response = yield ($this->client)($method, $url, $params, $headers);
             return $this->build($url, $response->getHeader('Content-Type'), yield $response->getBody());
         });

@@ -23,9 +23,9 @@ final class Operation
         $this->title = $title;
     }
 
-    public function submit(array $params): Promise//<Resource>
+    public function submit(array $params = []): Promise//<Resource>
     {
-        return $this->agent->call($this->method, $this->href, $this->params, ['Content-Type' => $this->contentType,]);
+        return $this->agent->call($this->method, $this->href, $params, ['Content-Type' => $this->contentType,]);
     }
 
     public function __toString(): string

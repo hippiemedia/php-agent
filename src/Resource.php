@@ -36,8 +36,12 @@ final class Resource
         $operations = implode("\n", $this->operations);
         return <<<DOC
         $this->url
+
+        $this->body
+
         links:
         $links
+
         operations:
         $operations
 
