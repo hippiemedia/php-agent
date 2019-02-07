@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 use Hippiemedia\Agent\Agent;
-use Hippiemedia\Agent\Adapter\JsonHal;
+use Hippiemedia\Agent\Adapter\HalJson;
 use Hippiemedia\Agent\Adapter\HalForms;
 use Amp\Socket\ClientTlsContext;
 use Amp\Artax\DefaultClient;
@@ -10,17 +10,24 @@ use Amp\Artax\Request;
 require(__DIR__.'/../vendor/autoload.php');
 
 \Amp\Loop::run(function() {
+    $host = getenv('HOST');
     $client = new DefaultClient(null, null, (new ClientTlsContext)->withoutPeerVerification());
-    $client = function($uri) use($client) {
-        return $client->request((new Request($uri))->withHeader('Authorization', getenv('TOKEN')));
+    $client = function($method, $uri, $body = null) use($client, $host) {
+        if (is_null(parse_url($uri, PHP_URL_HOST))) {
+            $uri = ltrim($uri, '/');
+            $uri = "$host/$uri";
+        }
+        return $client->request((new Request($uri, $method))
+            ->withHeader('Authorization', getenv('TOKEN'))
+            ->withBody($body)
+        );
     };
-    $agent = new Agent($client, new JsonHal, new HalForms);
-    $resource = yield $agent->follow("https://0.0.0.0/api");
+    $agent = new Agent($client, new HalJson, new HalForms);
+    $resource = yield $agent->follow("$host/api");
+    echo $resource;
 
-    var_dump($resource->body);
+    $resource2 = yield $resource->link('subscribe')->follow();
 
-    $resource2 = yield $resource->links['subscribe']->follow();
-
-    var_dump($resource2->body);
+    echo $resource2;
 });
 

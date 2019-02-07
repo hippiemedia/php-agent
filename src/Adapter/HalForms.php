@@ -2,13 +2,11 @@
 
 namespace Hippiemedia\Agent\Adapter;
 
-use function Amp\call;
+use Hippiemedia\Agent\Agent;
 use Hippiemedia\Agent\Adapter;
 use Hippiemedia\Agent\Resource;
-use Amp\Success;
-use Amp\Artax\Response;
-use Hippiemedia\Agent\Agent;
 use Hippiemedia\Agent\Link;
+use Hippiemedia\Agent\Operation;
 
 final class HalForms implements Adapter
 {
@@ -22,16 +20,15 @@ final class HalForms implements Adapter
         return 'application/prs.hal-forms+json';
     }
 
-    public function build(Agent $agent, Response $response, string $contentType)
+    public function build(Agent $agent, string $url, string $contentType, string $body): Resource
     {
-        return call(function() use($response, $agent) {
-            $body = yield $response->getBody();
-            $this->state = json_decode($body, true);
-            $links = array_map(function($link) use($agent) {
-                return new Link($agent, $link);
-            }, $this->state['_links'] ?? []);
-            $operations = [];
-            return new Resource($links, $operations, $body);
-        });
+        $state = json_decode($body);
+        $template = $state->_templates->default;
+        return new Resource(
+            $url,
+            [],
+            [new Operation($agent, $template->method, $state->_links->self[0]->href, $template->contentType, $template->properties, $template->title)],
+            $body
+        );
     }
 }

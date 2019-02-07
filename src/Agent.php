@@ -4,8 +4,6 @@ namespace Hippiemedia\Agent;
 
 use function Amp\call;
 use Amp\Promise;
-use Amp\Artax\Response;
-use Amp\Success;
 
 final class Agent
 {
@@ -21,17 +19,24 @@ final class Agent
     public function follow(string $url): Promise//<Resource>
     {
         return call(function() use($url) {
-            $response = yield ($this->client)($url);
-            return yield $this->build($response);
+            $response = yield ($this->client)('GET', $url);
+            return $this->build($url, $response->getHeader('Content-Type'), yield $response->getBody());
         });
     }
 
-    public function build(Response $response)
+    public function call(string $method, string $url, array $params, array $headers = []): Promise//<Resource>
     {
-        $contentType = $response->getHeader('Content-Type');
+        return call(function() use($url) {
+            $response = yield ($this->client)($method, $url, $params, $headers);
+            return $this->build($url, $response->getHeader('Content-Type'), yield $response->getBody());
+        });
+    }
+
+    public function build(string $url, string $contentType, string $body): Resource
+    {
         $adapter = $this->getAdapter($contentType);
 
-        return $adapter->build($this, $response, $this->accept($contentType));
+        return $adapter->build($this, $url, $contentType, $body, $this->accept($contentType));
     }
 
     private function getAdapter(string $type): Adapter {

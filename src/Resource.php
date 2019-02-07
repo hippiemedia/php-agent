@@ -2,16 +2,45 @@
 
 namespace Hippiemedia\Agent;
 
+use Hippiemedia\Agent\Link;
+
 final class Resource
 {
+    public $url;
+    public $href;
     public $links;
     public $operations;
     public $body;
 
-    public function __construct(array $links, array $operations, string $body)
+    public function __construct(string $url, array $links, array $operations, string $body)
     {
+        $this->url = $url;
         $this->links = $links;
         $this->operations = $operations;
         $this->body = $body;
+    }
+
+    public function link(string $rel): ?Link
+    {
+        return array_reduce($this->links, function($carry, $link) use($rel) {
+            if ($link->rel === $rel) {
+                return $link;
+            }
+            return $carry;
+        }, null);
+    }
+
+    public function __toString(): string
+    {
+        $links = implode("\n", $this->links);
+        $operations = implode("\n", $this->operations);
+        return <<<DOC
+        $this->url
+        links:
+        $links
+        operations:
+        $operations
+
+        DOC;
     }
 }
