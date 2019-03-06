@@ -30,7 +30,7 @@ Loop::run(coroutine(function() {
 
 function agent(string $host, string $auth = null) {
     $ampClient = new DefaultClient(null, null, (new ClientTlsContext)->withoutPeerVerification());
-    $client = function($method, $uri, array $params = []) use($ampClient, $host, $auth) {
+    $client = function($method, $uri, array $params, $headers) use($ampClient, $host, $auth) {
         if (is_null(parse_url($uri, PHP_URL_HOST))) {
             $uri = ltrim($uri, '/');
             $uri = "$host/$uri";
@@ -63,4 +63,3 @@ function agent(string $host, string $auth = null) {
     };
     return new Agent($client, new HalJson, new HalForms);
 }
-
