@@ -2,7 +2,7 @@
 
 namespace Hippiemedia\Agent;
 
-use Amp\Promise;
+use Hippiemedia\Agent\Resource;
 
 final class Operation
 {
@@ -25,9 +25,9 @@ final class Operation
         $this->title = $title;
     }
 
-    public function submit(array $params = []): Promise//<Resource>
+    public function submit(array $params = []): Resource
     {
-        return $this->agent->call($this->method, $this->href, $params, ['Content-Type' => $this->contentType,]);
+        return $this->agent->call($this->method, $this->href, $params, ['Content-Type' => $this->contentType]);
     }
 
     public function __toString(): string
@@ -40,6 +40,7 @@ final class Operation
         - $this->method $this->href ($this->contentType)
             $this->title
                 $fields
+
         DOC;
     }
 }

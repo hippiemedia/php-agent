@@ -1,10 +1,17 @@
 {
     "require": {
-        "amphp/artax": "^3.0"
+        "amphp/artax": "^3.0",
+        "amphp/green-thread": "*@dev"
     },
     "autoload": {
         "psr-4": {
             "Hippiemedia\\Agent\\": "src/"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/amphp/green-thread"
+        }
+    ]
 }

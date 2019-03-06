@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "634f39d60732aa96a41dc99d937e201b",
+    "content-hash": "3f2bcac85d0d63231293c72921fb0a2e",
     "packages": [
         {
             "name": "amphp/amp",
@@ -390,6 +390,70 @@
                 "static"
             ],
             "time": "2018-03-17T12:24:35+00:00"
+        },
+        {
+            "name": "amphp/green-thread",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/amphp/green-thread.git",
+                "reference": "355b72c56ee910da1f8a002cd5f32a2b76bd3eee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/amphp/green-thread/zipball/355b72c56ee910da1f8a002cd5f32a2b76bd3eee",
+                "reference": "355b72c56ee910da1f8a002cd5f32a2b76bd3eee",
+                "shasum": ""
+            },
+            "require": {
+                "amphp/amp": "^2",
+                "ext-fiber": "*"
+            },
+            "require-dev": {
+                "amphp/phpunit-util": "^1",
+                "friendsofphp/php-cs-fixer": "^2.3",
+                "phpunit/phpunit": "^6.0.9",
+                "react/promise": "^2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Amp\\GreenThread\\": "src"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Amp\\GreenThread\\Test\\": "test"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Aaron Piotrowski",
+                    "email": "aaron@trowski.com"
+                }
+            ],
+            "description": "Green thread implementation based on the PHP fiber extension",
+            "homepage": "http://amphp.org/amp",
+            "keywords": [
+                "async",
+                "asynchronous",
+                "concurrency",
+                "green thread",
+                "non-blocking",
+                "thread"
+            ],
+            "support": {
+                "issues": "https://github.com/amphp/green-thread/issues",
+                "irc": "irc://irc.freenode.org/amphp",
+                "source": "https://github.com/amphp/green-thread/tree/master"
+            },
+            "time": "2018-03-04T15:31:07+00:00"
         },
         {
             "name": "amphp/parallel",
@@ -860,7 +924,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "amphp/green-thread": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

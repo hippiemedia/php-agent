@@ -2,8 +2,7 @@
 
 namespace Hippiemedia\Agent;
 
-use function Amp\call;
-use Amp\Promise;
+use Hippiemedia\Agent\Resource;
 
 final class Agent
 {
@@ -16,20 +15,15 @@ final class Agent
         $this->adapters = $adapters;
     }
 
-    public function follow(string $url): Promise//<Resource>
+    public function follow(string $url): Resource
     {
-        return call(function() use($url) {
-            $response = yield ($this->client)('GET', $url);
-            return $this->build($url, $response->getHeader('Content-Type'), yield $response->getBody());
-        });
+        return $this->call('GET', $url, [], []);
     }
 
-    public function call(string $method, string $url, array $params, array $headers = []): Promise//<Resource>
+    public function call(string $method, string $url, array $params, array $headers = []): Resource
     {
-        return call(function() use($method, $url, $params, $headers) {
-            $response = yield ($this->client)($method, $url, $params, $headers);
-            return $this->build($url, $response->getHeader('Content-Type'), yield $response->getBody());
-        });
+        $response = ($this->client)($method, $url, $params, $headers);
+        return $this->build($url, $response->getHeader('Content-Type'), $response->getBody());
     }
 
     public function build(string $url, string $contentType, string $body): Resource

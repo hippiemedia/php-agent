@@ -2,8 +2,6 @@
 
 namespace Hippiemedia\Agent;
 
-use Amp\Promise;
-use Amp\Success;
 use Hippiemedia\Agent\Resource;
 
 final class Link
@@ -23,10 +21,10 @@ final class Link
         $this->title = $title;
     }
 
-    public function follow(bool $force = false): Promise//<Resource>
+    public function follow(bool $force = false): Resource
     {
         if ($this->resolved && !$force) {
-            return new Success($this->resolved);
+            return $this->resolved;
         }
         return $this->agent->follow($this->href);
     }
@@ -36,6 +34,7 @@ final class Link
         return <<<DOC
         - GET $this->href
             ($this->rel) $this->title
+
         DOC;
     }
 }
