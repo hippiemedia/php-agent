@@ -3,6 +3,7 @@
 namespace Hippiemedia\Agent;
 
 use Hippiemedia\Agent\Link;
+use Hippiemedia\Agent\Operation;
 
 final class Resource
 {
@@ -23,6 +24,16 @@ final class Resource
     public function link(string $rel): ?Link
     {
         return array_reduce($this->links, function($carry, $link) use($rel) {
+            if ($link->rel === $rel) {
+                return $link;
+            }
+            return $carry;
+        }, null);
+    }
+
+    public function operation(string $rel): ?Operation
+    {
+        return array_reduce($this->operations, function($carry, $link) use($rel) {
             if ($link->rel === $rel) {
                 return $link;
             }

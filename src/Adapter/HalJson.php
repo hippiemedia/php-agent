@@ -6,6 +6,7 @@ use Hippiemedia\Agent\Adapter;
 use Hippiemedia\Agent\Resource;
 use Hippiemedia\Agent\Agent;
 use Hippiemedia\Agent\Link;
+use Hippiemedia\Agent\Operation;
 
 final class HalJson implements Adapter
 {
@@ -26,18 +27,29 @@ final class HalJson implements Adapter
 
     private function buildFromBody(Agent $agent, string $url, string $contentType, \stdClass $body)
     {
-        $links = $this->buildLinks($agent, (array)($body->_links ?? []), (array)($body->_embedded ?? []), $contentType);
+        $all = iterator_to_array($this->buildLinksAndOperations($agent, (array)($body->_links ?? []), (array)($body->_embedded ?? []), $contentType));
+        $links = array_values(array_filter($all, function($item) {
+            return $item instanceof Link;
+        }));
+        $operations = array_values(array_filter($all, function($item) {
+            return $item instanceof Operation;
+        }));
 
-        return new Resource($url, iterator_to_array($links), [], json_encode($body));
+        return new Resource($url, $links, $operations, json_encode($body));
     }
 
-    private function buildLinks($agent, array $allLinks, array $allEmbedded, $contentType)
+    private function buildLinksAndOperations($agent, array $allLinks, array $allEmbedded, $contentType)
     {
         foreach ($allLinks as $rel => $links) {
             $embedded = $this->ensureArray($allEmbedded[$rel] ?? []);
             foreach ($this->ensureArray($links) as $link) {
                 $item = $this->findEmbedded($agent, $link->type ?? $contentType, $link->href, $embedded);
-                yield new Link($agent, $rel, $link->href, $item, $link->title ?: '');
+                if ($item && count($item->operations) === 1) {
+                    $operation = $item->operations[0];
+                    yield new Operation($agent, $rel, $operation->method, $operation->href, $operation->contentType, $operation->fields, $operation->title);
+                } else {
+                    yield new Link($agent, $rel, $link->href, $item, $link->title ?: '');
+                }
             }
         }
     }

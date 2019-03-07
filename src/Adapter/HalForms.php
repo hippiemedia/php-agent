@@ -27,7 +27,7 @@ final class HalForms implements Adapter
         return new Resource(
             $url,
             [],
-            [new Operation($agent, $template->method, $state->_links->self[0]->href, $template->contentType, $template->properties, $template->title)],
+            [new Operation($agent, $template->title, $template->method, $state->_links->self[0]->href, $template->contentType, $template->properties, $template->title)],
             $body
         );
     }

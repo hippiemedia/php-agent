@@ -6,6 +6,7 @@ use Amp\Promise;
 
 final class Operation
 {
+    public $rel;
     public $method;
     public $href;
     public $contentType;
@@ -13,9 +14,10 @@ final class Operation
     public $title;
     private $agent;
 
-    public function __construct(Agent $agent, string $method, string $href, string $contentType, array $fields = [], string $title)
+    public function __construct(Agent $agent, string $rel, string $method, string $href, string $contentType, array $fields = [], string $title)
     {
         $this->agent = $agent;
+        $this->rel = $rel;
         $this->method = $method;
         $this->href = $href;
         $this->contentType = $contentType;
@@ -33,6 +35,7 @@ final class Operation
         $fields = implode("\n        ", array_map(function($field) {
             return sprintf('%s = %s', $field->name, $field->value ?? '');
         }, $this->fields));
+
         return <<<DOC
         - $this->method $this->href ($this->contentType)
             $this->title
