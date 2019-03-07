@@ -31,8 +31,8 @@ final class SirenJson implements Adapter
             return new Link($agent, current($link->rel), $link->href, null, $link->title ?: '');
         }, $body->links);
 
-        $operations = array_map(function($operation) use($agent, $contentType) {
-            return new Operation($agent, $operation->name, $operation->method, $operation->href, $contentType, $operation->fields, $operation->title ?: '');
+        $operations = array_map(function($operation) use($agent) {
+            return new Operation($agent, $operation->name, $operation->method, $operation->href, $operation->type, $operation->fields, $operation->title ?: '');
         }, $body->actions);
 
         return new Resource($url, $links, $operations, json_encode($body->properties));

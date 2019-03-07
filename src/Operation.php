@@ -27,7 +27,7 @@ final class Operation
 
     public function submit(array $params = []): Resource
     {
-        return $this->agent->call($this->method, $this->href, $params, ['Content-Type' => $this->contentType]);
+        return $this->agent->call($this->method, $this->href, $params, ['content-type' => $this->contentType]);
     }
 
     public function __toString(): string

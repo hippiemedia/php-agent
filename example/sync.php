@@ -15,7 +15,7 @@ $api(function($method, $uri, array $params = [], array $headers = []) {
         ],
         'ssl' => ['allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false],
     ]));
-    getenv('DEBUG') === '1' && var_dump($options);
+    getenv('DEBUG') === '1' && var_dump($options, $body);
 
     return new class($body, $http_response_header) {
         public function __construct($body, array $headers)

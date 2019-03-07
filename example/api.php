@@ -15,5 +15,5 @@ return function($client) use($argv) {
     $entrypoint = $agent->follow("$host/api");
     echo $entrypoint;
 
-    echo $entrypoint->operation('subscribe')->submit(['0[upc]' => 'test']);
+    echo $entrypoint->operation('subscribe')->submit(json_decode(file_get_contents('php://stdin'), true));
 };
