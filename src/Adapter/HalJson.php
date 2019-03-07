@@ -3,6 +3,7 @@
 namespace Hippiemedia\Agent\Adapter;
 
 use Hippiemedia\Agent\Adapter;
+use Hippiemedia\Agent\Adapter\HalForms;
 use Hippiemedia\Agent\Resource;
 use Hippiemedia\Agent\Agent;
 use Hippiemedia\Agent\Link;
@@ -10,6 +11,13 @@ use Hippiemedia\Agent\Operation;
 
 final class HalJson implements Adapter
 {
+    private $halForms;
+
+    public function __construct(HalForms $halForms)
+    {
+        $this->halForms = $halForms;
+    }
+
     public function supports(string $contentType): bool
     {
         return in_array($contentType, ['application/hal+json', 'application/vnd.error+json']);
@@ -43,8 +51,8 @@ final class HalJson implements Adapter
         foreach ($allLinks as $rel => $links) {
             $embedded = $this->ensureArray($allEmbedded[$rel] ?? []);
             foreach ($this->ensureArray($links) as $link) {
-                $item = $this->findEmbedded($agent, $link->type ?? $contentType, $link->href, $embedded);
-                if ($item && count($item->operations) === 1) {
+                $item = $this->findEmbedded($agent, $link->type ?: $contentType, $link->href, $embedded);
+                if ($item && $this->halForms->supports($link->type ?: $contentType)) {
                     $operation = $item->operations[0];
                     yield new Operation($agent, $rel, $operation->method, $operation->href, $operation->contentType, $operation->fields, $operation->title);
                 } else {

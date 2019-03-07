@@ -21,12 +21,12 @@ final class Link
         $this->title = $title;
     }
 
-    public function follow(bool $force = false): Resource
+    public function follow(array $params = [], bool $force = false): Resource
     {
         if ($this->resolved && !$force) {
             return $this->resolved;
         }
-        return $this->agent->follow($this->href);
+        return $this->agent->follow($this->href, $params);
     }
 
     public function __toString(): string

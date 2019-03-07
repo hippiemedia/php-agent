@@ -8,21 +8,23 @@ final class Agent
 {
     private $client;
     private $adapters = [];
+    private $defaultHeaders = [];
 
-    public function __construct(callable $client, Adapter ...$adapters)
+    public function __construct(callable $client, array $defaultHeaders = [], Adapter ...$adapters)
     {
         $this->client = $client;
+        $this->defaultHeaders = $defaultHeaders;
         $this->adapters = $adapters;
     }
 
-    public function follow(string $url): Resource
+    public function follow(string $url, array $params = [], array $headers = []): Resource
     {
-        return $this->call('GET', $url, [], []);
+        return $this->call('GET', $url, $params, $headers);
     }
 
     public function call(string $method, string $url, array $params, array $headers = []): Resource
     {
-        $response = ($this->client)($method, $url, $params, $headers);
+        $response = ($this->client)($method, $url, $params, array_merge($this->defaultHeaders, $headers));
         return $this->build($url, $response->getHeader('Content-Type'), $response->getBody());
     }
 
@@ -30,7 +32,7 @@ final class Agent
     {
         $adapter = $this->getAdapter($contentType);
 
-        return $adapter->build($this, $url, $contentType, $body, $this->accept($contentType));
+        return $adapter->build($this->preferring($contentType), $url, $contentType, $body);
     }
 
     private function getAdapter(string $type): Adapter {
@@ -39,10 +41,12 @@ final class Agent
         }));
     }
 
-    private function accept(string $contentType): string
+    public function preferring(string $contentType): self
     {
-        return implode(',', array_map(function($adapter) use($contentType) {
+        $accept = implode(',', array_map(function($adapter) use($contentType) {
             return $adapter->accepts() . ($adapter->supports($contentType) ? ';q=1' : ';q=0.8');
         }, $this->adapters));
+
+        return new self($this->client, array_merge($this->defaultHeaders, ['accept' => $accept]), ...$this->adapters);
     }
 }

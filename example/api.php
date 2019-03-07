@@ -7,18 +7,13 @@ use Hippiemedia\Agent\Adapter\HalJson;
 use Hippiemedia\Agent\Adapter\HalForms;
 use Hippiemedia\Agent\Adapter\SirenJson;
 
-return function($client, string $accept = 'application/vnd.siren+json') {
-    $agent = new Agent($client, new HalJson, new HalForms, new SirenJson);
+return function($client) use($argv) {
+    $agent = (new Agent($client, ['authorization' => getenv('TOKEN')], new HalJson(new HalForms), new HalForms, new SirenJson))
+        ->preferring($argv[1] ?? 'application/vnd.siren+json');
 
-    echo "follow /api\n";
-    $resource = $agent->follow('/api', [], ['accept' => $accept]);
-    echo $resource;
+    $host = getenv('HOST');
+    $entrypoint = $agent->follow("$host/api");
+    echo $entrypoint;
 
-    //echo "follow link 'subscribe'\n";
-    //$resource2 = $resource->link('subscribe')->follow();
-    //echo $resource2;
-
-    echo "submit operation\n";
-    $resource3 = $resource->operation('subscribe')->submit(['0[upc]' => 'test']);
-    echo $resource3;
+    echo $entrypoint->operation('subscribe')->submit(['0[upc]' => 'test']);
 };
