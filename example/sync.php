@@ -1,29 +1,17 @@
 <?php declare(strict_types=1);
 
+require(__DIR__.'/../vendor/autoload.php');
+
 use Hippiemedia\Agent\Agent;
 use Hippiemedia\Agent\Adapter\HalJson;
 use Hippiemedia\Agent\Adapter\HalForms;
 
-require(__DIR__.'/../vendor/autoload.php');
+$api = require(__DIR__.'/api.php');
 
-(function() {
-    $agent = agent(getenv('HOST'), getenv('TOKEN'));
+$api(client(getenv('HOST'), getenv('TOKEN')), $argv[1] ?? 'application/vnd.siren+json');
 
-    echo "follow /api\n";
-    $resource = $agent->follow('/api');
-    echo $resource;
-
-    echo "follow link 'subscribe'\n";
-    $resource2 = $resource->link('subscribe')->follow();
-    echo $resource2;
-
-    echo "submit operation\n";
-    $resource3 = $resource2->operations[0]->submit(['0[upc]' => 'test']);
-    echo $resource3;
-})();
-
-function agent(string $host, string $auth = null) {
-    $client = function($method, $uri, array $params, array $headers) use($host, $auth) {
+function client(string $host, string $auth = null) {
+    return function($method, $uri, array $params, array $headers) use($host, $auth) {
         if (is_null(parse_url($uri, PHP_URL_HOST))) {
             $uri = ltrim($uri, '/');
             $uri = "$host/$uri";
@@ -32,7 +20,12 @@ function agent(string $host, string $auth = null) {
         $body = file_get_contents($uri, false, stream_context_create([
             'http' => [
                 'method' => $method,
-                'header' => array_merge(['Authorization: '.$auth, 'Content-Type: application/x-www-form-urlencoded'], $headers),
+                'header' => array_merge(
+                    ['Authorization: '.$auth, 'Content-Type: application/x-www-form-urlencoded'],
+                    array_map(function($key, $value) {
+                        return "$key: $value";
+                    }, array_keys($headers), $headers)
+                ),
                 'content' => http_build_query($params),
             ],
             'ssl' => [
@@ -48,6 +41,7 @@ function agent(string $host, string $auth = null) {
                 $this->body = $body;
                 array_shift($headers);
                 $this->headers = array_reduce($headers, function($carry, $item) {
+                    if (!strpos($item, ':')) return ;
                     [$key, $value] = explode(': ', $item);
                     $carry[$key] = $value;
                     return $carry;
@@ -56,7 +50,6 @@ function agent(string $host, string $auth = null) {
 
             public function getHeader(string $header): ?string
             {
-                var_dump($this->headers);
                 return $this->headers[$header] ?? '';
             }
 
@@ -66,5 +59,5 @@ function agent(string $host, string $auth = null) {
             }
         };
     };
-    return new Agent($client, new HalJson, new HalForms);
 }
+
