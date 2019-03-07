@@ -1,10 +1,13 @@
 <?php declare(strict_types=1);
 
+use Hippiemedia\Agent\Client;
+use Hippiemedia\Agent\Client\Response;
+
 require(__DIR__.'/../vendor/autoload.php');
 
 $api = require(__DIR__.'/api.php');
 
-$api(function($method, $uri, array $params = [], array $headers = []) {
+$api(new class implements Client { function __invoke($method, $uri, array $params = [], array $headers = []): Response {
     $body = file_get_contents($uri, false, stream_context_create($options = [
         'http' => [
             'method' => $method,
@@ -17,7 +20,7 @@ $api(function($method, $uri, array $params = [], array $headers = []) {
     ]));
     getenv('DEBUG') === '1' && var_dump($options, $body);
 
-    return new class($body, $http_response_header) {
+    return new class($body, $http_response_header) implements Response {
         public function __construct($body, array $headers)
         {
             $this->body = $body;
@@ -40,5 +43,5 @@ $api(function($method, $uri, array $params = [], array $headers = []) {
             return $this->body;
         }
     };
-});
+}});
 
