@@ -1,8 +1,5 @@
 {
     "name": "hippiemedia/agent",
-    "require": {
-        "amphp/artax": "^3.0"
-    },
     "autoload": {
         "psr-4": {
             "Hippiemedia\\Agent\\": "src/"
@@ -10,5 +7,8 @@
         "files": [
             "src/Url/resolve.php"
         ]
+    },
+    "require-dev": {
+        "amphp/artax": "^3.0"
     }
 }

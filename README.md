@@ -23,6 +23,9 @@ echo $entrypoint->operation('subscribe')->submit(json_decode(file_get_contents('
 
 > Note: `$client` must be an implementation of `Hippiemedia\Agent\Client`. You can find a [sync](./example/sync.php) or an [async](./example/async.php) example in this repo.
 
+## Async support
+
+You can exploit [`ext-async`](https://github.com/concurrent-php/ext-async) to make non-blocking calls by using the [amp/artax](src/Client/Async/Amp/Artax.php) client.
 
 ## Tests
 
