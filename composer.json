@@ -1,7 +1,7 @@
 {
     "require": {
         "amphp/artax": "^3.0",
-        "amphp/green-thread": "*@dev"
+        "ext-async": "*"
     },
     "autoload": {
         "psr-4": {
