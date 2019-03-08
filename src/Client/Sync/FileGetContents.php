@@ -26,7 +26,7 @@ final class FileGetContents implements Client
             ],
         ])));
 
-        return new class($body, $http_response_header) implements Response
+        return new class($body, $http_response_header ?? []) implements Response
         {
             public function __construct($body, array $headers)
             {

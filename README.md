@@ -31,4 +31,4 @@ You can exploit [`ext-async`](https://github.com/concurrent-php/ext-async) to ma
 
 Run all the tests in parallel:
 
-    find tests -name '*.php' | xargs -P0 php -d auto_prepend_file=vendor/autoload.php
+    find tests -name '*.php' | xargs -P0 -n1 php -d auto_prepend_file=vendor/autoload.php
