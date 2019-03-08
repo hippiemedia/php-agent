@@ -2,6 +2,7 @@
 
 namespace Hippiemedia\Agent\Adapter;
 
+use function Hippiemedia\Agent\Url\resolve;
 use Hippiemedia\Agent\Agent;
 use Hippiemedia\Agent\Adapter;
 use Hippiemedia\Agent\Resource;
@@ -27,7 +28,7 @@ final class HalForms implements Adapter
         return new Resource(
             $url,
             [],
-            [new Operation($agent, $template->title, $template->method, $state->_links->self[0]->href, $template->contentType, $template->properties, $template->title)],
+            [new Operation($agent, $template->title, $template->method, resolve($url, $state->_links->self[0]->href), $template->contentType, $template->properties, $template->title)],
             $body
         );
     }

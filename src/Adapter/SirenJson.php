@@ -2,6 +2,7 @@
 
 namespace Hippiemedia\Agent\Adapter;
 
+use function Hippiemedia\Agent\Url\resolve;
 use Hippiemedia\Agent\Adapter;
 use Hippiemedia\Agent\Resource;
 use Hippiemedia\Agent\Agent;
@@ -27,12 +28,12 @@ final class SirenJson implements Adapter
 
     private function buildFromBody(Agent $agent, string $url, string $contentType, \stdClass $body)
     {
-        $links = array_map(function($link) use($agent) {
-            return new Link($agent, current($link->rel), $link->href, null, $link->title ?: '');
+        $links = array_map(function($link) use($agent, $url) {
+            return new Link($agent, current($link->rel), resolve($url, $link->href), null, $link->title ?: '');
         }, $body->links);
 
-        $operations = array_map(function($operation) use($agent) {
-            return new Operation($agent, $operation->name, $operation->method, $operation->href, $operation->type, $operation->fields, $operation->title ?: '');
+        $operations = array_map(function($operation) use($agent, $url) {
+            return new Operation($agent, $operation->name, $operation->method, resolve($url, $operation->href), $operation->type, $operation->fields, $operation->title ?: '');
         }, $body->actions);
 
         return new Resource($url, $links, $operations, json_encode($body->properties));

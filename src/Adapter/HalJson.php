@@ -2,6 +2,7 @@
 
 namespace Hippiemedia\Agent\Adapter;
 
+use function Hippiemedia\Agent\Url\resolve;
 use Hippiemedia\Agent\Adapter;
 use Hippiemedia\Agent\Adapter\HalForms;
 use Hippiemedia\Agent\Resource;
@@ -35,7 +36,7 @@ final class HalJson implements Adapter
 
     private function buildFromBody(Agent $agent, string $url, string $contentType, \stdClass $body)
     {
-        $all = iterator_to_array($this->buildLinksAndOperations($agent, (array)($body->_links ?? []), (array)($body->_embedded ?? []), $contentType));
+        $all = iterator_to_array($this->buildLinksAndOperations($agent, $url, (array)($body->_links ?? []), (array)($body->_embedded ?? []), $contentType));
         $links = array_values(array_filter($all, function($item) {
             return $item instanceof Link;
         }));
@@ -46,7 +47,7 @@ final class HalJson implements Adapter
         return new Resource($url, $links, $operations, json_encode($body));
     }
 
-    private function buildLinksAndOperations($agent, array $allLinks, array $allEmbedded, $contentType)
+    private function buildLinksAndOperations($agent, $url, array $allLinks, array $allEmbedded, $contentType)
     {
         foreach ($allLinks as $rel => $links) {
             $embedded = $this->ensureArray($allEmbedded[$rel] ?? []);
@@ -54,9 +55,9 @@ final class HalJson implements Adapter
                 $item = $this->findEmbedded($agent, $link->type ?: $contentType, $link->href, $embedded);
                 if ($item && $this->halForms->supports($link->type ?: $contentType)) {
                     $operation = $item->operations[0];
-                    yield new Operation($agent, $rel, $operation->method, $operation->href, $operation->contentType, $operation->fields, $operation->title);
+                    yield new Operation($agent, $rel, $operation->method, resolve($url, $operation->href), $operation->contentType, $operation->fields, $operation->title);
                 } else {
-                    yield new Link($agent, $rel, $link->href, $item, $link->title ?: '');
+                    yield new Link($agent, $rel, resolve($url, $link->href), $item, $link->title ?: '');
                 }
             }
         }

@@ -1,17 +1,14 @@
 {
+    "name": "hippiemedia/agent",
     "require": {
-        "amphp/artax": "^3.0",
-        "ext-async": "*"
+        "amphp/artax": "^3.0"
     },
     "autoload": {
         "psr-4": {
             "Hippiemedia\\Agent\\": "src/"
-        }
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/amphp/green-thread"
-        }
-    ]
+        },
+        "files": [
+            "src/Url/resolve.php"
+        ]
+    }
 }
