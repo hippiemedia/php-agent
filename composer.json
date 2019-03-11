@@ -5,7 +5,8 @@
             "Hippiemedia\\Agent\\": "src/"
         },
         "files": [
-            "src/Url/resolve.php"
+            "src/Url/resolve.php",
+            "src/amp-fiber.php"
         ]
     },
     "require-dev": {
