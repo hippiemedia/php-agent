@@ -30,6 +30,6 @@ $client = new class implements Client {
 };
 
 $agent = (new Agent($client, [], new Fallback))->preferring('*/*');
-assert(strval($agent->follow('/')->body) === 'CONTENT');
+assert(strval($agent->follow('/')->response->body()) === 'CONTENT');
 
 echo "✓ agent is usable\n";

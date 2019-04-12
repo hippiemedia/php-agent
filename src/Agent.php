@@ -4,6 +4,7 @@ namespace Hippiemedia\Agent;
 
 use Hippiemedia\Agent\Resource;
 use Hippiemedia\Agent\Client\Body;
+use Hippiemedia\Agent\Client\Response;
 
 final class Agent
 {
@@ -26,14 +27,15 @@ final class Agent
     public function call(string $method, string $url, Body $body = null, array $headers = []): Resource
     {
         $response = ($this->client)($method, $url, $body, array_merge($this->defaultHeaders, $headers));
-        return $this->build($url, $response->getHeader('content-type'), $response->body());
+        return $this->build($url, $response);
     }
 
-    public function build(string $url, string $contentType, ?Body $body): Resource
+    public function build(string $url, Response $response): Resource
     {
+        $contentType = $response->getHeader('content-type');
         $adapter = $this->getAdapter($contentType);
 
-        return $adapter->build($this->preferring($contentType), $url, $contentType, $body);
+        return $adapter->build($this->preferring($contentType), $url, $response);
     }
 
     private function getAdapter(string $type): Adapter {

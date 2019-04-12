@@ -10,6 +10,7 @@ use Hippiemedia\Agent\Agent;
 use Hippiemedia\Agent\Link;
 use Hippiemedia\Agent\Operation;
 use Hippiemedia\Agent\Client\Body;
+use Hippiemedia\Agent\Client\Response;
 
 final class HalJson implements Adapter
 {
@@ -30,10 +31,11 @@ final class HalJson implements Adapter
         return 'application/hal+json';
     }
 
-    public function build(Agent $agent, string $url, string $contentType, ?Body $body): Resource
+    public function build(Agent $agent, string $url, Response $response): Resource
     {
-        $state = json_decode(strval($body));
-        $all = iterator_to_array($this->buildLinksAndOperations($agent, $url, (array)($state->_links ?? []), (array)($state->_embedded ?? []), $contentType));
+        $contentType = $response->getHeader('content-type');
+        $body = json_decode(strval($response->body()));
+        $all = iterator_to_array($this->buildLinksAndOperations($agent, $url, (array)($body->_links ?? []), (array)($body->_embedded ?? []), $contentType));
         $links = array_values(array_filter($all, function($item) {
             return $item instanceof Link;
         }));
@@ -41,7 +43,7 @@ final class HalJson implements Adapter
             return $item instanceof Operation;
         }));
 
-        return new Resource($url, $links, $operations, $body);
+        return new Resource($url, $links, $operations, $response);
     }
 
     private function buildLinksAndOperations($agent, $url, array $allLinks, array $allEmbedded, $contentType)
@@ -68,10 +70,20 @@ final class HalJson implements Adapter
         return array_filter([$items]);
     }
 
-    private function findEmbedded($agent, string $type, string $href, array $embedded)
+    private function findEmbedded($agent, string $contentType, string $href, array $embedded)
     {
-        return current(array_map(function($item) use($agent, $type, $href) {
-            return $agent->build($href, $type, Body::fromString(json_encode($item)));
+        return current(array_map(function($item) use($agent, $contentType, $href) {
+            $response = new class($contentType, $item) implements Response {
+                public function __construct(string $contentType, $item)
+                {
+                    $this->headers = ['content-type' => $contentType];
+                    $this->body = Body::fromString(json_encode($item));
+                }
+                public function statusCode(): int { return 200; }
+                public function getHeader(string $name): ?string { return $this->headers[$name] ?? null; }
+                public function body(): ?Body { return $this->body; }
+            };
+            return $agent->build($href, $response);
         }, array_filter($embedded, function($item) use($href) {
             return $item->_links->self[0]->href ?? null === $href;
         }))) ?: null;

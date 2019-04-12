@@ -9,6 +9,7 @@ use Hippiemedia\Agent\Agent;
 use Hippiemedia\Agent\Link;
 use Hippiemedia\Agent\Operation;
 use Hippiemedia\Agent\Client\Body;
+use Hippiemedia\Agent\Client\Response;
 
 final class SirenJson implements Adapter
 {
@@ -22,9 +23,9 @@ final class SirenJson implements Adapter
         return 'application/vnd.siren+json';
     }
 
-    public function build(Agent $agent, string $url, string $contentType, ?Body $body): Resource
+    public function build(Agent $agent, string $url, Response $response): Resource
     {
-        $state = json_decode(strval($body));
+        $state = json_decode(strval($response->body()));
         $links = array_map(function($link) use($agent, $url) {
             return new Link($agent, current($link->rel), resolve($url, $link->href), null, $link->title ?: '');
         }, $state->links);
@@ -33,6 +34,6 @@ final class SirenJson implements Adapter
             return new Operation($agent, $operation->name, $operation->method, resolve($url, $operation->href), $operation->type, $operation->fields, $operation->title ?: '');
         }, $state->actions);
 
-        return new Resource($url, $links, $operations, $body);
+        return new Resource($url, $links, $operations, $response);
     }
 }

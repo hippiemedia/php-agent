@@ -23,19 +23,24 @@ final class FileGetContents implements Client
 
     public function __invoke($method, $uri, Body $requestBody = null, array $headers = []): Response
     {
-        $responseBody = file_get_contents($uri, false, stream_context_create(array_merge($this->defaultContext, [
-            'http' => [
-                'method' => $method,
-                'header' => array_map(function($key, $value) {
-                    return "$key: $value";
-                }, array_keys($headers), $headers),
-                'content' => strval($requestBody)
-            ],
-        ])));
+        try {
+            $responseBody = file_get_contents($uri, false, stream_context_create(array_merge_recursive($this->defaultContext, [
+                'http' => [
+                    'method' => $method,
+                    'header' => array_map(function($key, $value) {
+                        return "$key: $value";
+                    }, array_keys($headers), $headers),
+                    'content' => strval($requestBody)
+                ],
+            ])));
+        }
+        catch(\Throwable $e) {
+            //error_log(strval($e));
+        }
 
-        return new class($responseBody, $http_response_header ?? []) implements Response
+        return new class($responseBody ?? null, $http_response_header ?? []) implements Response
         {
-            public function __construct($body, array $headers)
+            public function __construct(?string $body, array $headers)
             {
                 $statusLine = array_shift($headers);
                 if (preg_match(FileGetContents::STATUS_LINE_PATTERN, strval($statusLine), $matches)) {
@@ -47,7 +52,7 @@ final class FileGetContents implements Client
                     $carry[strtolower($key)] = $value;
                     return $carry;
                 }, []);
-                $this->body = Body::fromString($body, $this->getHeader('content-type'));
+                $this->body = $body ? Body::fromString($body, $this->getHeader('content-type')) : null;
             }
 
             public function statusCode(): int
@@ -57,7 +62,7 @@ final class FileGetContents implements Client
 
             public function getHeader(string $header): ?string
             {
-                return $this->headers[$header] ?? '';
+                return $this->headers[$header] ?? null;
             }
 
             public function body(): ?Body

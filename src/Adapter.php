@@ -4,9 +4,9 @@ namespace Hippiemedia\Agent;
 
 use Hippiemedia\Agent\Agent;
 use Hippiemedia\Agent\Resource;
-use Hippiemedia\Agent\Client\Body;
+use Hippiemedia\Agent\Client\Response;
 
 interface Adapter
 {
-    public function build(Agent $agent, string $url, string $contentType, ?Body $body): Resource;
+    public function build(Agent $agent, string $url, Response $response): Resource;
 }
