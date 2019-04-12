@@ -4,7 +4,9 @@ namespace Hippiemedia\Agent\Client;
 
 interface Response
 {
+    public function statusCode(): int;
+
     public function getHeader(string $header): ?string;
 
-    public function getBody(): string;
+    public function body(): ?Body;
 }

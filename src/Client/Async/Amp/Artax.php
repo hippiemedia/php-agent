@@ -7,7 +7,8 @@ use Hippiemedia\Agent\Client\Response;
 use Amp\Artax\DefaultClient;
 use Amp\Artax\Request;
 use Amp\Artax\StringBody;
-use function amp\fiber\await;
+use Concurrent\Task;
+use Hippiemedia\Agent\Client\Body;
 
 final class Artax implements Client
 {
@@ -16,11 +17,11 @@ final class Artax implements Client
         $this->ampClient = $ampClient;
     }
 
-    public function __invoke($method, $uri, array $params = [], $headers = []): Response
+    public function __invoke($method, $uri, Body $body = null, $headers = []): Response
     {
-        $response = await($this->ampClient->request((new Request($uri, $method))
+        $response = Task::await($this->ampClient->request((new Request($uri, $method))
            ->withHeaders($headers)
-           ->withBody(new StringBody(http_build_query($params)))
+           ->withBody(strval($body))
        ));
 
         return new class($response) implements Response {
@@ -30,14 +31,19 @@ final class Artax implements Client
                 $this->response = $response;
             }
 
+            public function statusCode(): int
+            {
+                return $this->response->getStatus();
+            }
+
             public function getHeader(string $header): ?string
             {
                 return $this->response->getHeader($header);
             }
 
-            public function getBody(): string
+            public function body(): ?Body
             {
-                return await($this->response->getBody());
+                return Body::fromString(await($this->response->getBody()), $this->getHeader('content-type'));
             }
         };
     }

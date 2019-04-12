@@ -8,6 +8,7 @@ use Hippiemedia\Agent\Adapter;
 use Hippiemedia\Agent\Resource;
 use Hippiemedia\Agent\Link;
 use Hippiemedia\Agent\Operation;
+use Hippiemedia\Agent\Client\Body;
 
 final class HalForms implements Adapter
 {
@@ -21,9 +22,9 @@ final class HalForms implements Adapter
         return 'application/prs.hal-forms+json';
     }
 
-    public function build(Agent $agent, string $url, string $contentType, string $body): Resource
+    public function build(Agent $agent, string $url, string $contentType, ?Body $body): Resource
     {
-        $state = json_decode($body);
+        $state = json_decode(strval($body));
         $template = $state->_templates->default;
         return new Resource(
             $url,

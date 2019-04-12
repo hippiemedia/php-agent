@@ -3,8 +3,9 @@
 namespace Hippiemedia\Agent;
 
 use Hippiemedia\Agent\Client\Response;
+use Hippiemedia\Agent\Client\Body;
 
 interface Client
 {
-    public function __invoke($method, $uri, array $params = [], array $headers = []): Response;
+    public function __invoke($method, $uri, Body $body = null, array $headers = []): Response;
 }

@@ -18,7 +18,7 @@ $host = getenv('HOST');
 $entrypoint = $agent->follow("$host/api");
 echo $entrypoint;
 
-echo $entrypoint->operation('subscribe')->submit(json_decode(file_get_contents('php://stdin'), true));
+echo $entrypoint->operation('subscribe')->submit(Body::http_build_query(json_decode(file_get_contents('php://stdin'), true)));
 ```
 
 > Note: `$client` must be an implementation of `Hippiemedia\Agent\Client`. You can find a [sync](./example/sync.php) or an [async](./example/async.php) example in this repo.

@@ -5,6 +5,8 @@ namespace tests\Client\FileGetContents;
 use Hippiemedia\Agent\Client\Sync\FileGetContents;
 
 $client = new FileGetContents;
-assert($client('GET', __FILE__)->getBody() === file_get_contents(__FILE__));
+assert(strval($client('GET', __FILE__)->body()) === file_get_contents(__FILE__));
 
-echo "✓ uses_file_get_contents\n";
+assert($client('GET', 'https://google.com')->statusCode() === 301);
+
+echo "✓ uses file_get_contents\n";

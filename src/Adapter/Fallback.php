@@ -6,6 +6,7 @@ use Hippiemedia\Agent\Adapter;
 use Hippiemedia\Agent\Resource;
 use Hippiemedia\Agent\Agent;
 use Hippiemedia\Agent\Link;
+use Hippiemedia\Agent\Client\Body;
 
 final class Fallback implements Adapter
 {
@@ -19,7 +20,7 @@ final class Fallback implements Adapter
         return '*/*';
     }
 
-    public function build(Agent $agent, string $url, string $contentType, string $body): Resource
+    public function build(Agent $agent, string $url, string $contentType, ?Body $body): Resource
     {
         return new Resource($url, [], [], $body);
     }

@@ -4,6 +4,7 @@ namespace Hippiemedia\Agent;
 
 use Hippiemedia\Agent\Link;
 use Hippiemedia\Agent\Operation;
+use Hippiemedia\Agent\Client\Body;
 
 final class Resource
 {
@@ -13,7 +14,7 @@ final class Resource
     public $operations;
     public $body;
 
-    public function __construct(string $url, array $links, array $operations, string $body)
+    public function __construct(string $url, array $links, array $operations, ?Body $body)
     {
         $this->url = $url;
         $this->links = $links;
@@ -56,6 +57,6 @@ final class Resource
         operations:
         $operations
 
-        DOC;
+DOC;
     }
 }
