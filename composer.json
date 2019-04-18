@@ -11,5 +11,8 @@
     },
     "require-dev": {
         "amphp/artax": "^3.0"
+    },
+    "require": {
+        "rize/uri-template": "^0.3.2"
     }
 }

@@ -4,6 +4,7 @@ namespace Hippiemedia\Agent;
 
 use Hippiemedia\Agent\Link;
 use Hippiemedia\Agent\Operation;
+use Hippiemedia\Agent\Client\Response;
 
 final class Resource
 {
@@ -11,14 +12,14 @@ final class Resource
     public $href;
     public $links;
     public $operations;
-    public $body;
+    public $response;
 
-    public function __construct(string $url, array $links, array $operations, string $body)
+    public function __construct(string $url, array $links, array $operations, Response $response)
     {
         $this->url = $url;
         $this->links = $links;
         $this->operations = $operations;
-        $this->body = $body;
+        $this->response = $response;
     }
 
     public function link(string $rel): ?Link
@@ -45,10 +46,12 @@ final class Resource
     {
         $links = implode("\n", $this->links);
         $operations = implode("\n", $this->operations);
+        $body = strval($this->response->body());
+
         return <<<DOC
         $this->url
 
-        $this->body
+        $body
 
         links:
         $links
@@ -56,6 +59,6 @@ final class Resource
         operations:
         $operations
 
-        DOC;
+DOC;
     }
 }
