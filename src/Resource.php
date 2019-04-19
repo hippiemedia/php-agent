@@ -32,6 +32,15 @@ final class Resource
         }, null);
     }
 
+    public function links(string $rel): array
+    {
+        return array_filter($this->links, function($link) use($rel) {
+            if ($link->rel === $rel) {
+                return $link;
+            }
+        });
+    }
+
     public function operation(string $rel): ?Operation
     {
         return array_reduce($this->operations, function($carry, $link) use($rel) {
@@ -46,12 +55,12 @@ final class Resource
     {
         $links = implode("\n", $this->links);
         $operations = implode("\n", $this->operations);
-        $body = strval($this->response->body());
 
         return <<<DOC
         $this->url
 
-        $body
+        body:
+        {$this->response->body()}
 
         links:
         $links
