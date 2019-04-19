@@ -9,7 +9,6 @@ use Hippiemedia\Agent\Client\Response;
 final class Resource
 {
     public $url;
-    public $href;
     public $links;
     public $operations;
     public $response;
