@@ -3,6 +3,7 @@
 namespace Hippiemedia\Agent;
 
 use Hippiemedia\Agent\Resource;
+use Hippiemedia\Agent\Client;
 use Hippiemedia\Agent\Client\Body;
 use Hippiemedia\Agent\Client\Response;
 
@@ -12,7 +13,7 @@ final class Agent
     private $adapters = [];
     private $defaultHeaders = [];
 
-    public function __construct(callable $client, array $defaultHeaders = [], Adapter ...$adapters)
+    public function __construct(Client $client, array $defaultHeaders = [], Adapter ...$adapters)
     {
         $this->client = $client;
         $this->defaultHeaders = $defaultHeaders;

@@ -45,8 +45,8 @@ final class Link
         }, $this->fields));
 
         return <<<DOC
-        - GET $this->href
-            ($this->rel) $this->title
+        - $this->rel: GET $this->href
+            $this->title
                 $fields
 
 DOC;

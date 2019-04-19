@@ -25,7 +25,7 @@ echo $entrypoint->operation('subscribe')->submit(Body::http_build_query(json_dec
 
 ## Async support
 
-You can exploit [`ext-async`](https://github.com/concurrent-php/ext-async) to make non-blocking calls by using the [amp/artax](src/Client/Async/Amp/Artax.php) client.
+You can exploit [`ext-async`](https://github.com/concurrent-php/ext-async) to make non-blocking calls by using the [concurrent-php/http](src/Client/Async/ConcurrentPhp.php) client.
 
 ## Tests
 

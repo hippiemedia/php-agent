@@ -7,5 +7,5 @@ use Hippiemedia\Agent\Client\Body;
 
 interface Client
 {
-    public function __invoke($method, $uri, Body $body = null, array $headers = []): Response;
+    public function __invoke(string $method, string $url, Body $body = null, array $headers = []): Response;
 }

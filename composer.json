@@ -5,14 +5,15 @@
             "Hippiemedia\\Agent\\": "src/"
         },
         "files": [
-            "src/Url/resolve.php",
-            "src/amp-fiber.php"
+            "src/Url/resolve.php"
         ]
     },
     "require-dev": {
-        "amphp/artax": "^3.0"
     },
     "require": {
-        "rize/uri-template": "^0.3.2"
+        "rize/uri-template": "^0.3.2",
+        "nyholm/psr7": "^1.1",
+        "concurrent-php/async-api": "dev-master",
+        "concurrent-php/http": "dev-http2"
     }
 }

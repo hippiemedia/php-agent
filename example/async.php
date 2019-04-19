@@ -2,13 +2,11 @@
 
 require(__DIR__.'/../vendor/autoload.php');
 
-use Amp\Loop;
-use Amp\Artax\DefaultClient;
-use Hippiemedia\Agent\Client\Async\Amp\Artax;
-use Amp\Socket\ClientTlsContext;
-use function amp\fiber\coroutine;
+use Hippiemedia\Agent\Client\Async\ConcurrentPhp;
+use Concurrent\Http\HttpClient;
+use Concurrent\Http\HttpClientConfig;
+use Nyholm\Psr7\Factory\Psr17Factory;
 
-Loop::run(coroutine(function() use($argv) {
-    $api = require(__DIR__.'/api.php');
-    $api(new Artax(new DefaultClient(null, null, (new ClientTlsContext)->withoutPeerVerification())));
-}));
+$api = require(__DIR__.'/api.php');
+$factory = new Psr17Factory();
+$api(new ConcurrentPhp(new HttpClient(new HttpClientConfig($factory)), $factory));
