@@ -18,7 +18,7 @@ $host = getenv('HOST');
 $entrypoint = $agent->follow("$host/api");
 echo $entrypoint;
 
-echo $entrypoint->operation('subscribe')->submit(Body::http_build_query(json_decode(file_get_contents('php://stdin'), true)));
+echo $entrypoint->operation('subscribe')->submit(Body::http_build_query(['some' => 'value']));
 ```
 
 > Note: `$client` must be an implementation of `Hippiemedia\Agent\Client`. You can find a [sync](./example/sync.php) or an [async](./example/async.php) example in this repo.
@@ -31,4 +31,4 @@ You can exploit [`ext-async`](https://github.com/concurrent-php/ext-async) to ma
 
 Run all the tests in parallel:
 
-    find tests -name '*.php' | xargs -P0 -n1 php -d auto_prepend_file=vendor/autoload.php
+    find tests/unit -name '*.php' | xargs -P0 -n1 php -d auto_prepend_file=vendor/autoload.php

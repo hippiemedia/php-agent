@@ -30,5 +30,5 @@ return function($client) use($argv) {
         return strval($r->response->body());
     }, $subs));
 
-    //echo $entrypoint->operation('subscribe')->submit(Body::http_build_query(['asin' => rand()]));
+    echo $entrypoint->operation('subscribe')->submit(Body::http_build_query(['asin' => rand()]));
 };
