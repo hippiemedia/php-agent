@@ -27,11 +27,17 @@ final class HalForms implements Adapter
     {
         $body = json_decode(strval($response->body()));
         $template = $body->_templates->default;
+        $state = null;
+        if (is_object($body)) {
+            $state = clone $body;
+            unset($state->_templates, $state->_links);
+        }
         return new Resource(
             $url,
             [],
             [new Operation($agent, $template->title, $template->method, resolve($url, $body->_links->self[0]->href), $template->contentType, $template->properties, $template->title)],
-            $response
+            $response,
+            $state
         );
     }
 }

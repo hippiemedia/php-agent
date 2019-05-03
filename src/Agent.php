@@ -33,7 +33,7 @@ final class Agent
 
     public function build(string $url, Response $response): Resource
     {
-        $contentType = $response->getHeader('content-type');
+        $contentType = strval($response->getHeader('content-type'));
         $adapter = $this->getAdapter($contentType);
 
         return $adapter->build($this->preferring($contentType), $url, $response);

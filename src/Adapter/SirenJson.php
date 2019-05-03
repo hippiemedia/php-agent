@@ -39,7 +39,7 @@ final class SirenJson implements Adapter
             return new Operation($agent, $operation->name, $operation->method, resolve($url, $operation->href), $operation->type, $operation->fields, $operation->title ?: '');
         }, $state->actions);
 
-        return new Resource($url, $links, $operations, $response);
+        return new Resource($url, $links, $operations, $response, $state->properties);
     }
 
     private function findEmbedded($agent, string $contentType, string $href, array $embedded)
@@ -52,7 +52,7 @@ final class SirenJson implements Adapter
                     $this->body = Body::fromString(json_encode($item));
                 }
                 public function statusCode(): int { return 200; }
-                public function getHeader(string $name): ?string { return $this->headers[$name] ?? null; }
+                public function getHeader(string $name): ?string { return $this->headers[strtolower($name)] ?? null; }
                 public function body(): ?Body { return $this->body; }
             };
             return $agent->build($href, $response);
