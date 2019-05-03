@@ -43,7 +43,13 @@ final class HalJson implements Adapter
             return $item instanceof Operation;
         }));
 
-        return new Resource($url, $links, $operations, $response);
+        $state = null;
+        if (is_object($body)) {
+            $state = clone $body;
+            unset($state->_templates, $state->_links);
+        }
+
+        return new Resource($url, $links, $operations, $response, $state);
     }
 
     private function buildLinksAndOperations($agent, $url, array $allLinks, array $allEmbedded, $contentType)

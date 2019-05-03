@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d7e57483c084ee64961a968fe7e5fcc",
+    "content-hash": "3253cd53a99865fec6a8d747bfb02651",
     "packages": [
         {
             "name": "concurrent-php/async-api",
@@ -51,16 +51,16 @@
         },
         {
             "name": "concurrent-php/http",
-            "version": "dev-http2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/concurrent-php/http.git",
-                "reference": "91af7beacbc3d8a1d7355c02a6f11362d6f68753"
+                "reference": "7dd2a30"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/concurrent-php/http/zipball/91af7beacbc3d8a1d7355c02a6f11362d6f68753",
-                "reference": "91af7beacbc3d8a1d7355c02a6f11362d6f68753",
+                "url": "https://api.github.com/repos/concurrent-php/http/zipball/7dd2a30",
+                "reference": "7dd2a30",
                 "shasum": ""
             },
             "require": {
@@ -101,7 +101,7 @@
             ],
             "description": "HTTP Client & Server",
             "homepage": "https://github.com/concurrent-php/http",
-            "time": "2019-04-18T12:47:02+00:00"
+            "time": "2019-05-02T15:08:29+00:00"
         },
         {
             "name": "nyholm/psr7",

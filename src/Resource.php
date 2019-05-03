@@ -12,13 +12,15 @@ final class Resource
     public $links;
     public $operations;
     public $response;
+    public $state;
 
-    public function __construct(string $url, array $links, array $operations, Response $response)
+    public function __construct(string $url, array $links, array $operations, Response $response, $state = null)
     {
         $this->url = $url;
         $this->links = $links;
         $this->operations = $operations;
         $this->response = $response;
+        $this->state = $state;
     }
 
     public function link(string $rel): ?Link

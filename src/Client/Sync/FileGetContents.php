@@ -43,6 +43,7 @@ final class FileGetContents implements Client
             public function __construct(?string $body, array $headers)
             {
                 $statusLine = array_shift($headers);
+                $this->statusCode = 200;
                 if (preg_match(FileGetContents::STATUS_LINE_PATTERN, strval($statusLine), $matches)) {
                     $this->statusCode = intval($matches['status']);
                 }
