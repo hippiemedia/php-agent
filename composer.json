@@ -9,11 +9,11 @@
         ]
     },
     "require-dev": {
+        "concurrent-php/async-api": "dev-master",
+        "concurrent-php/http": "dev-master#7dd2a30"
     },
     "require": {
         "rize/uri-template": "^0.3.2",
-        "nyholm/psr7": "^1.1",
-        "concurrent-php/async-api": "dev-master",
-        "concurrent-php/http": "dev-master#7dd2a30"
+        "nyholm/psr7": "^1.1"
     }
 }
